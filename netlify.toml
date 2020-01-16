@@ -2,3 +2,13 @@
   command = "npm install && npm run build"
   publish = "views"
   functions = "functions"
+
+[[redirects]]
+  from = "/*"
+  to = "/src/views/index.html"
+  status = 200
+
+  [[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/server"
+  status = 200
