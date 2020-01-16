@@ -6,7 +6,9 @@
   "author": "ukyi",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon --watch src --delay 1 --exec 'ts-node' src/server"
+    "serve": "nodemon --watch src --ext ts --exec ts-node --ignore '*.test.ts' --delay 1 src/server",
+    "lambda:serve": "netlify-lambda serve src",
+    "build": "netlify-lambda build src"
   },
   "dependencies": {
     "bcrypt": "^3.0.7",
@@ -23,6 +25,7 @@
     "serverless-http": "^2.3.0"
   },
   "devDependencies": {
+    "netlify-lambda": "^1.6.3",
     "@babel/preset-typescript": "^7.8.3",
     "@types/bcrypt": "^3.0.0",
     "@types/cors": "^2.8.6",
