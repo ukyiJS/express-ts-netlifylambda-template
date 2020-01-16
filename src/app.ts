@@ -1,9 +1,10 @@
-import express, { Application } from 'express';
+import express, { Application, Request, Response } from 'express';
 import path from 'path';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import Controller from './interfaces/controller';
 import errorMiddleware from './middleware/error';
+import notFoundMiddleware from './middleware/notFound';
 import { INFO } from './utils/log';
 
 class App {
@@ -42,6 +43,7 @@ class App {
   }
 
   private initializeErrorHandling() {
+    this.app.use(notFoundMiddleware);
     this.app.use(errorMiddleware);
   }
 
