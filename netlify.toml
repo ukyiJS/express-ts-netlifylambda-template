@@ -4,11 +4,11 @@
   functions = "functions"
 
 [[redirects]]
-  from = "/*"
+  from = "/test"
   to = "src/views/index.html"
   status = 200
 
 [[redirects]]
-  from = "/api/**"
-  to = "/.netlify/functions/server"
+  from = "/api"
+  to = "/.netlify/functions/server/api"
   status = 200
