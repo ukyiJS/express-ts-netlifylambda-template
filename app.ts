@@ -3,10 +3,10 @@ import path from 'path';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
-import Controller from './interfaces/controller';
-import errorMiddleware from './middleware/error';
-import notFoundMiddleware from './middleware/notFound';
-import { INFO, ERROR } from './utils/log';
+import Controller from './src/interfaces/controller';
+import errorMiddleware from './src/middleware/error';
+import notFoundMiddleware from './src/middleware/notFound';
+import { INFO, ERROR } from './src/utils/log';
 
 class App {
   public app: Application;
