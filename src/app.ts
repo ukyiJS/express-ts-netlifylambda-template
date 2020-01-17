@@ -38,7 +38,7 @@ class App {
     this.app.set('view engine', 'html');
     this.app.set('views', path.join(__dirname, 'views'));
 
-    // this.app.use(proxy('/api/**', { target: '/.netlify/functions/server' }));
+    this.app.use(proxy('/api/**', { target: '/.netlify/functions/server' }));
     this.app.use(cors());
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
