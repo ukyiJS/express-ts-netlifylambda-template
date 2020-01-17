@@ -2,11 +2,11 @@ import express, { Application, Request, Response } from 'express';
 import path from 'path';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import mongoose from 'mongoose';
 import Controller from './interfaces/controller';
 import errorMiddleware from './middleware/error';
 import notFoundMiddleware from './middleware/notFound';
-import proxy from 'http-proxy-middleware';
-import { INFO } from './utils/log';
+import { INFO, ERROR } from './utils/log';
 
 class App {
   public app: Application;
@@ -22,7 +22,7 @@ class App {
     this.initializeMiddlewares();
     this.initializeControllers(controllers);
     this.initializeErrorHandling();
-    // this.connectToTheDatabase();
+    this.connectToTheDatabase();
   }
 
   public getServer() {
@@ -38,8 +38,6 @@ class App {
     this.app.set('view engine', 'html');
     this.app.set('views', path.join(__dirname, 'views'));
 
-    this.app.use(proxy('/api/**', { target: '/.netlify/functions/server' }));
-    this.app.use(proxy('/test', { target: '/src/views/index.html' }));
     this.app.use(cors());
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
@@ -54,10 +52,28 @@ class App {
     controllers.forEach(controller => this.app.use('/', controller.router));
   }
 
-  // private connectToTheDatabase() {
-  //   const { MONGO_USER, MONGO_PASSWORD, MONGO_PATH } = process.env;
-  //   mongoose.connect(`mongodb://${MONGO_USER}:${MONGO_PASSWORD}${MONGO_PATH}`);
-  // }
+  private connectToTheDatabase() {
+    this.connectMongoDB();
+    mongoose.connection.on('disconnected', this.connectMongoDB);
+    process.on('SIGINT', this.closeMongoDB);
+  }
+
+  private connectMongoDB() {
+    const { MONGO_USER, MONGO_PASSWORD, MONGO_PATH } = process.env;
+    const options = { useNewUrlParser: true, useUnifiedTopology: true };
+    const uri = `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}${MONGO_PATH}`;
+    mongoose
+      .connect(uri, options)
+      .then(_ => INFO('MongoDB connected...'))
+      .catch(error => ERROR(`${error}`));
+  }
+
+  private closeMongoDB() {
+    mongoose.connection.close(() => {
+      INFO('MongoDB close');
+      process.exit(0);
+    });
+  }
 }
 
 export default App;
