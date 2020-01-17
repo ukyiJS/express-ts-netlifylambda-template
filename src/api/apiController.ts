@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import Controller from '../interfaces/controller';
 
 class apiController implements Controller {
-  public path = '/.netlify/functions/server';
+  public path = '/.netlify/functions/server/api';
   public router = express.Router();
 
   constructor() {
