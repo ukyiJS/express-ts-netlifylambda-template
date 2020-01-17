@@ -21,7 +21,7 @@ yarn build
 ### require ENV
 
 ```
-PORT, JWT_SECRET, MONGO_USER, MONGO_PASSWORD,
+PORT, JWT_SECRET, MONGO_USER, MONGO_PASSWORD, MONGO_PATH
 ```
 
 # Libraries and Technologies used
