@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import Controller from './interfaces/controller';
 import errorMiddleware from './middleware/error';
 import notFoundMiddleware from './middleware/notFound';
+import proxy from 'http-proxy-middleware';
 import { INFO } from './utils/log';
 
 class App {
@@ -37,6 +38,7 @@ class App {
     this.app.set('view engine', 'html');
     this.app.set('views', path.join(__dirname, 'views'));
 
+    // this.app.use(proxy('/api/**', { target: '/.netlify/functions/server' }));
     this.app.use(cors());
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
