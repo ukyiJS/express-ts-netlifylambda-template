@@ -5,10 +5,10 @@
 
 [[redirects]]
   from = "/test"
-  to = "src/views/index.html"
+  to = "/src/views/index.html"
   status = 200
 
 [[redirects]]
-  from = "/api"
+  from = "/api/**"
   to = "/.netlify/functions/server/api"
   status = 200
