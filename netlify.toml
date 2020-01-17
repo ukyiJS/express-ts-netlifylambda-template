@@ -2,14 +2,3 @@
   command = "npm install && npm run build"
   publish = "src/views"
   functions = "functions"
-
-[[redirects]]
-  from = "/test"
-  to = "/src/views/index.html"
-  force = true
-  status = 200
-
-[[redirects]]
-  from = "/api"
-  to = "/.netlify/functions/server"
-  status = 200
