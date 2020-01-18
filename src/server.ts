@@ -1,12 +1,12 @@
 import 'source-map-support/register';
 import 'dotenv/config';
-import App from '../app';
 import serverless from 'serverless-http';
+import App from '../app';
 import validateEnv from './utils/validateEnv';
-import indexController from './index/indexController';
-import apiController from './api/apiController';
+import IndexController from './index/indexController';
+import ApiController from './api/apiController';
 
 validateEnv();
 
-const app = App.of([new indexController(), new apiController()]).app;
+const { app } = App.of([new IndexController(), new ApiController()]);
 export const handler = serverless(app);

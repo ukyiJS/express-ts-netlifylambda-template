@@ -1,9 +1,10 @@
-import express from 'express';
-import { Request, Response } from 'express';
+import express, { Request, Response } from 'express';
+
 import Controller from '../interfaces/controller';
 
-class apiController implements Controller {
+class ApiController implements Controller {
   public path = '/.netlify/functions/server/api';
+
   public router = express.Router();
 
   constructor() {
@@ -19,4 +20,4 @@ class apiController implements Controller {
   }
 }
 
-export default apiController;
+export default ApiController;

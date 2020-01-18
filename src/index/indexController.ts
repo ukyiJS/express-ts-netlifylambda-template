@@ -1,9 +1,10 @@
-import express from 'express';
-import { Request, Response } from 'express';
+import express, { Request, Response } from 'express';
+
 import Controller from '../interfaces/controller';
 
-class indexController implements Controller {
+class IndexController implements Controller {
   public path = '/';
+
   public router = express.Router();
 
   constructor() {
@@ -19,4 +20,4 @@ class indexController implements Controller {
   }
 }
 
-export default indexController;
+export default IndexController;
