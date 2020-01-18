@@ -1,6 +1,7 @@
-import express, { Application, Request, Response } from 'express';
+import express, { Application } from 'express';
 import path from 'path';
 import cors from 'cors';
+import ejs from 'ejs';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import Controller from './src/interfaces/controller';
@@ -34,9 +35,9 @@ class App {
   }
 
   private initializeMiddlewares() {
-    this.app.engine('html', require('ejs').renderFile);
+    this.app.engine('html', ejs.renderFile);
     this.app.set('view engine', 'html');
-    this.app.set('views', path.join(__dirname, 'views'));
+    this.app.set('views', path.join(__dirname, 'src/views'));
 
     this.app.use(cors());
     this.app.use(bodyParser.json());
