@@ -41,3 +41,5 @@ PORT, JWT_SECRET, MONGO_USER, MONGO_PASSWORD, MONGO_PATH
 - [Jsonwebtoken](https://github.com/auth0/node-jsonwebtoken)
 
 - [Bcrypt](https://github.com/kelektiv/node.bcrypt.js)
+
+- [Eslint](https://eslint.org/)
