@@ -1,4 +1,4 @@
-import express, { Application } from 'express';
+import express, { Application, Response, NextFunction, Request } from 'express';
 import path from 'path';
 import cors from 'cors';
 import ejs from 'ejs';
@@ -6,7 +6,7 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import Controller from './src/interfaces/controller';
 import errorMiddleware from './src/middleware/error';
-import notFoundMiddleware from './src/middleware/notFound';
+import NotFoundException from './src/exceptions/notFoundException';
 import { INFO, ERROR } from './src/utils/log';
 
 class App {
@@ -45,7 +45,7 @@ class App {
   }
 
   private initializeErrorHandling() {
-    this.app.use(notFoundMiddleware);
+    this.app.use((req: Request, res: Response, next: NextFunction) => errorMiddleware(new NotFoundException(), req, res, next));
     this.app.use(errorMiddleware);
   }
 
