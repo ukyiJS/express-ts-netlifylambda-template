@@ -1,8 +1,9 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 
 import Controller from '../interfaces/controller';
+import DataDoesNotExistException from '../exceptions/dataDoesNotExistException';
 
-class ApiController implements Controller {
+class apiController implements Controller {
   public path = '/.netlify/functions/server/api';
 
   public router = express.Router();
@@ -12,12 +13,14 @@ class ApiController implements Controller {
   }
 
   private initializeRoutes() {
-    this.router.get(this.path, this.render);
+    this.router.get(this.path, this.example);
   }
 
-  private render(req: Request, res: Response) {
-    res.json({ api: 'apiTest' });
+  private example(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.query;
+    if (id) res.json({ api: id, status: res.statusCode });
+    else next(new DataDoesNotExistException());
   }
 }
 
-export default ApiController;
+export default apiController;
