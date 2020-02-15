@@ -1,4 +1,4 @@
-# typescript-express-netlifylambda-template
+# express-ts-netlifylambda-template
 
 ## Project setup
 
