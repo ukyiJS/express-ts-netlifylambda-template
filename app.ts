@@ -1,37 +1,36 @@
-import express, { Application } from 'express';
-import path from 'path';
-import cors from 'cors';
-import ejs from 'ejs';
 import bodyParser from 'body-parser';
+import 'colors';
+import cors from 'cors';
+import 'dotenv/config';
+import ejs from 'ejs';
+import express, { Application } from 'express';
 import mongoose from 'mongoose';
+import path from 'path';
+import NotFoundException from './src/exceptions/notFoundException';
 import Controller from './src/interfaces/controller';
 import errorMiddleware from './src/middleware/error';
-import notFoundMiddleware from './src/middleware/notFound';
-import { INFO, ERROR } from './src/utils/log';
+import log, { ERROR, SUCCESS, WARN } from './src/utils/log';
 
-class App {
+export default class App {
+  private static private: symbol = Symbol('private');
   public app: Application;
+  public port: string;
 
   public static of(controllers: Controller[]) {
-    return new App(controllers);
+    return new App(controllers, this.private);
   }
 
-  constructor(controllers: Controller[]) {
-    this.app = express();
+  constructor(controllers: Controller[], checker: symbol) {
+    if (checker !== App.private) throw 'Use App.of()!'.red;
 
-    this.listen();
+    this.app = express();
+    this.port = process.env.PORT ?? '3000';
+
     this.initializeMiddlewares();
     this.initializeControllers(controllers);
     this.initializeErrorHandling();
     this.connectToTheDatabase();
-  }
-
-  public getServer() {
-    return this.app;
-  }
-
-  public listen() {
-    this.app.listen(process.env.PORT, () => INFO(`Server listening on http://localhost:${process.env.PORT}`));
+    Object.freeze(this);
   }
 
   private initializeMiddlewares() {
@@ -42,39 +41,40 @@ class App {
     this.app.use(cors());
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
-  }
-
-  private initializeErrorHandling() {
-    this.app.use(notFoundMiddleware);
-    this.app.use(errorMiddleware);
+    this.app.use(express.static(path.join(__dirname, 'src', 'assets')));
   }
 
   private initializeControllers(controllers: Controller[]) {
     controllers.forEach(controller => this.app.use('/', controller.router));
   }
 
+  private initializeErrorHandling() {
+    this.app.use((req, res, next) => errorMiddleware(new NotFoundException(req), req, res, next));
+    this.app.use(errorMiddleware);
+    this.app.get('/favicon.ico', (req, res) => res.status(204));
+  }
+
   private connectToTheDatabase() {
     this.connectMongoDB();
-    mongoose.connection.on('disconnected', this.connectMongoDB);
-    process.on('SIGINT', this.closeMongoDB);
+
+    mongoose.connection.on('connected', () => log(SUCCESS)('MongoDB connected', 'connect'));
+    mongoose.connection.on('error', error => log(ERROR)(error.toString()));
+    process.on('SIGINT', this.closeMongoDB).on('SIGTERM', this.closeMongoDB);
   }
 
   private connectMongoDB() {
     const { MONGO_USER, MONGO_PASSWORD, MONGO_PATH } = process.env;
-    const options = { useNewUrlParser: true, useUnifiedTopology: true };
-    const uri = `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}${MONGO_PATH}`;
-    mongoose
-      .connect(uri, options)
-      .then(_ => INFO('MongoDB connected...'))
-      .catch(error => ERROR(`${error}`));
+
+    mongoose.set('useNewUrlParser', true);
+    mongoose.set('useUnifiedTopology', true);
+
+    mongoose.connect(`mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}${MONGO_PATH}`);
   }
 
   private closeMongoDB() {
     mongoose.connection.close(() => {
-      INFO('MongoDB close');
+      log(WARN)('MongoDB close', 'close');
       process.exit(0);
     });
   }
 }
-
-export default App;
