@@ -26,14 +26,14 @@ export default class App {
     this.app = express();
     this.port = process.env.PORT ?? '3000';
 
-    this.initializeMiddlewares();
-    this.initializeControllers(controllers);
-    this.initializeErrorHandling();
+    this.initMiddlewares();
+    this.initControllers(controllers);
+    this.initErrorHandling();
     this.connectToTheDatabase();
     Object.freeze(this);
   }
 
-  private initializeMiddlewares() {
+  private initMiddlewares() {
     this.app.engine('html', ejs.renderFile);
     this.app.set('view engine', 'html');
     this.app.set('views', path.join(__dirname, 'src/views'));
@@ -44,11 +44,11 @@ export default class App {
     this.app.use(express.static(path.join(__dirname, 'src', 'assets')));
   }
 
-  private initializeControllers(controllers: Controller[]) {
+  private initControllers(controllers: Controller[]) {
     controllers.forEach(controller => this.app.use('/', controller.router));
   }
 
-  private initializeErrorHandling() {
+  private initErrorHandling() {
     this.app.use((req, res, next) => errorMiddleware(new NotFoundException(req), req, res, next));
     this.app.use(errorMiddleware);
     this.app.get('/favicon.ico', (req, res) => res.status(204));
