@@ -1,7 +1,12 @@
 {
   "root": true,
   "env": {
-    "node": true
+    "node": true,
+    "browser": true
+  },
+  "globals": {
+    "$": true,
+    "_": true
   },
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint", "html"],
@@ -14,6 +19,8 @@
     "comma-dangle": "off",
     "no-unused-vars": "off",
     "arrow-parens": ["error", "as-needed"],
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "lines-between-class-members": "off",
+    "object-curly-newline": "off"
   }
 }
