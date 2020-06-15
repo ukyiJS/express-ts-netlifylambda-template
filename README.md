@@ -24,7 +24,7 @@ yarn build
 PORT, JWT_SECRET, MONGO_USER, MONGO_PASSWORD, MONGO_PATH
 ```
 
-# Libraries and Technologies used
+# Used libraries and technologies
 
 - [Typescript](https://www.typescriptlang.org/)
 
